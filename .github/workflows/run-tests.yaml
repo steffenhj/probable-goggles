@@ -1,26 +1,35 @@
-name: run-tests-for-leap-year
+name: Java
+
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  tests:
-    name: Run tests
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout and setup
-        uses: actions/checkout@v3
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v2
         with:
-          python-version: '3.11'
-      - name: Install poetry
-        run: pipx install poetry
-      - name: Install dependencies
-        run: poetry install
-      - name: Run tests
-        run: poetry run pytest -r w
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Build
+        run: mvn --batch-mode -DskipTests package
+
+      - name: Test
+        run: mvn --batch-mode -Dmaven.test.failure.ignore=true test
+
+      - name: Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Maven Tests
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: true
