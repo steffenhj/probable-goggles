@@ -27,7 +27,7 @@ jobs:
         run: mvn --batch-mode -Dmaven.test.failure.ignore=true test
 
       - name: Report
-        uses: steffenhj/test-reporter@v1
+        uses: steffenhj/legendary-journey@v1
         if: always()
         with:
           name: Maven Tests
