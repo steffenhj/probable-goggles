@@ -1,4 +1,4 @@
-name: Java
+name: Run-tests-and-report-back
 
 on:
   push:
